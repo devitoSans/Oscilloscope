@@ -5,6 +5,7 @@
 byte g_DECIMAL_POINTS = 3;
 
 short g_BATCH_ANALOG_VALUES[MAX_BATCH_NUM];
+unsigned long g_BATCH_TIME[MAX_BATCH_NUM];
 
 byte g_DELAY_TYPE = MICRO;
 unsigned long g_DELAY = 2;
@@ -40,6 +41,7 @@ void loop()
     for(short i = 0; i < MAX_BATCH_NUM; i++)
     {
         g_BATCH_ANALOG_VALUES[i] = analogRead(A1);
+        g_BATCH_TIME[i] = micros();
         delayMicroseconds(g_DELAY * delayMultiplier);
     }
 
@@ -61,7 +63,8 @@ void loop()
             }
         }
 
-        Serial.println(voltageValue);
+        Serial.print(voltageValue);
+        Serial.println(g_BATCH_TIME[i]);
     }
 }
 
