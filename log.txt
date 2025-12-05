@@ -1,0 +1,10 @@
+ISSUE 1: Using snprintf(..., "%.2f", 1.232), will output ? and not 1.23.
+SOLUTION 1: https://stackoverflow.com/questions/14146850/arduino-printf-fprintf-prints-question-mark-instead-of-float/14146944#14146944
+
+Therefore: Arduino does not support float, long long on a string.
+
+ISSUE 2: Cannot Serial.print greater than 16-bit integer (32,767) using int type.
+SOLUTION 2: https://docs.arduino.cc/language-reference/en/variables/data-types/int/,
+            https://docs.arduino.cc/language-reference/en/variables/data-types/long/
+            Therefore, use long as 32-bit integer.
+
