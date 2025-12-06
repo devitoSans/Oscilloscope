@@ -8,7 +8,7 @@ short g_BATCH_ANALOG_VALUES[MAX_BATCH_NUM];
 unsigned long g_BATCH_TIME[MAX_BATCH_NUM];
 
 byte g_DELAY_TYPE = MICRO;
-unsigned long g_DELAY = 2;
+unsigned long g_DELAY = 20; 
 
 byte countDigits(long x);
 byte mapToVoltage(long x, long& mappedValue, byte decimalPoints=3);
@@ -17,7 +17,7 @@ void changePrescaler(byte divisionFactor);
 void setup() 
 {
     Serial.begin(BAUDRATE);
-    changePrescaler(16);
+    changePrescaler(8);
 }
 
 void loop() 
@@ -38,11 +38,17 @@ void loop()
         delayMultiplier = 1;
     }
 
+    unsigned long prevTime = 0, nextTime = 0;
     for(short i = 0; i < MAX_BATCH_NUM; i++)
     {
         g_BATCH_ANALOG_VALUES[i] = analogRead(A1);
-        g_BATCH_TIME[i] = micros();
-        delayMicroseconds(g_DELAY * delayMultiplier);
+        g_BATCH_TIME[i] = nextTime - prevTime;
+        prevTime += g_BATCH_TIME[i];
+        
+        while(nextTime - prevTime < g_DELAY*delayMultiplier) 
+        {
+            nextTime = micros();
+        }
     }
 
     const byte maxVoltageDigits PROGMEM = countDigits(MAX_VOLTAGE);

@@ -11,7 +11,7 @@
     #define ADPS2   2
 #endif
 
-#define MAX_BATCH_NUM 100
+#define MAX_BATCH_NUM 200
 // This program only accounts for up to 9 Volt.
 // But Arduino AVR UNO's max is 5 volt 
 #define MAX_VOLTAGE 5.00
