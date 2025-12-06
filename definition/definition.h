@@ -2,6 +2,8 @@
 #define DEFINITION
 
 #include <math.h>
+#include "maxBatchNumDef.h"
+#include "baudrateDef.h"
 
 // Will be defined later on ATMega328P, I think
 #ifndef ADCSRA && ADPS0 && ADPS1 && ADPS2
@@ -11,14 +13,12 @@
     #define ADPS2   2
 #endif
 
-#define MAX_BATCH_NUM 200
 // This program only accounts for up to 9 Volt.
 // But Arduino AVR UNO's max is 5 volt 
 #define MAX_VOLTAGE 5.00
 #define MAX_ANALOG_INPUT 1023.0
 // Based on mapToVoltage()
 #define MAX_DECIMAL_POINTS 7
-#define BAUDRATE 9600
 
 // ADC Prescaler for ATMega328P (Arduino AVR UNO's Microcontroller)
 #define PRESCALE_(X) ((byte)(log(X) / log(2)))
