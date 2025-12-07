@@ -16,6 +16,6 @@ arduino-cli.exe upload -p COM4 -b arduino:avr:uno .
 #     arduino-cli.exe monitor -p COM4 -c baudrate=$baudrate
 # fi
 
-sleep 3
+sleep 1
 
-py fetcher/fetch_data.py
+py fetch_data.py

@@ -1,4 +1,4 @@
-from definition import *
+from fetcher_config.definition import *
 
 import serial
 from abc import ABC, abstractmethod
@@ -23,7 +23,7 @@ class PySerial(SerialWrapper):
     self._ser = serial.Serial(config.get("port"), config.get("baudrate"), timeout=config.get("timeout"))
     sleep(2)
 
-  def read(self) -> None:
+  def read(self) -> str:
     return self._ser.readline().decode().strip()
   
   def write(self, data: str) -> None:

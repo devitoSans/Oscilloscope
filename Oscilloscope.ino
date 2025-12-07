@@ -27,7 +27,7 @@ void setup()
 void loop() 
 {
     // Change dynamic configuration based on user's preferences
-    // setting();
+    setting();
 
     unsigned long prevTime = 0, nextTime = 0;
     for(short i = 0; i < MAX_BATCH_NUM; i++)

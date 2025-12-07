@@ -1,6 +1,6 @@
-from serial_wrapper import *
-from definition import *
-from port_config import *
+from fetcher_config.definition import *
+from fetcher_config.serial_wrapper import *
+from fetcher_config.port_config import *
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -10,7 +10,7 @@ DEBUG_MODE = 0
 
 class FetcherData:
   def __init__(self, 
-               port: str = None, 
+               port: str | None = None, 
                baudrate: int = 9600, 
                timeout: float = 1.0, 
                ):
@@ -68,10 +68,10 @@ class FetcherData:
 
 fetcher = FetcherData()
 
-def test():
-  # fetcher._ser.write_bytes(DELAY_CONFIG)
-  # fetcher._ser.write("100")
-  # fetcher._ser.write_bytes(END_CONFIG_CHANGE)
+def test_change_config():
+  fetcher._ser.write_bytes(DELAY_CONFIG)
+  fetcher._ser.write("50")
+  fetcher._ser.write_bytes(END_CONFIG_CHANGE)
 
   # testSerial = PySerial({
   #     "port": "COM4",
@@ -86,8 +86,9 @@ def test():
   # print(fetcher._ser.read())
   # print(testSerial.read())
 
-  # sleep(2)
+  sleep(2)
 
+def test():
   data = np.array(fetcher.fetch_data())
 
   print(data)
