@@ -2,56 +2,47 @@
 #include <Arduino.h>
 #include <MemoryFree.h>
 
+// Dynamic Config 
+// (Can be change by the user during run time)
 byte g_DECIMAL_POINTS = 3;
+byte g_DELAY_TYPE = MICRO;
+unsigned long g_DELAY = 20;
 
 short g_BATCH_ANALOG_VALUES[MAX_BATCH_NUM];
 unsigned long g_BATCH_TIME[MAX_BATCH_NUM];
 
-byte g_DELAY_TYPE = MICRO;
-unsigned long g_DELAY = 20; 
-
+unsigned long getTime();
 byte countDigits(long x);
 byte mapToVoltage(long x, long& mappedValue, byte decimalPoints=3);
 void changePrescaler(byte divisionFactor);
+bool readInput(byte& configType, unsigned long long& value);
+void setting();
 
 void setup() 
 {
     Serial.begin(BAUDRATE);
-    changePrescaler(8);
+    changePrescaler(16);
 }
 
 void loop() 
 {
-    long delayMultiplier = 0;
-
-    // Configure delay's type
-    if(g_DELAY_TYPE == SECOND)
-    {
-        delayMultiplier = 1e6;
-    }
-    else if(g_DELAY_TYPE == MILLI)
-    {
-        delayMultiplier = 1e3;
-    }
-    else if(g_DELAY_TYPE == MICRO)
-    {
-        delayMultiplier = 1;
-    }
+    // Change dynamic configuration based on user's preferences
+    // setting();
 
     unsigned long prevTime = 0, nextTime = 0;
     for(short i = 0; i < MAX_BATCH_NUM; i++)
     {
-        g_BATCH_ANALOG_VALUES[i] = analogRead(A1);
         g_BATCH_TIME[i] = nextTime - prevTime;
         prevTime += g_BATCH_TIME[i];
+        g_BATCH_ANALOG_VALUES[i] = analogRead(A1);
         
-        while(nextTime - prevTime < g_DELAY*delayMultiplier) 
+        while(nextTime - prevTime < g_DELAY+1) 
         {
-            nextTime = micros();
+            nextTime = getTime();
         }
     }
 
-    const byte maxVoltageDigits PROGMEM = countDigits(MAX_VOLTAGE);
+    const byte maxVoltageDigits = countDigits(MAX_VOLTAGE);
     for(short i = 0; i < MAX_BATCH_NUM; i++)
     {
         long voltageValue;
@@ -60,21 +51,37 @@ void loop()
 
         // Add leading zero for voltage value below 1 V
         byte leadingZeroNumber = desiredDigitNumber - numberOfDigits;
-        // Serial.println(leadingZeroNumber);
         if(leadingZeroNumber > 0)
         {
             for(byte i = 0; i < leadingZeroNumber; i++)
             {
-                Serial.print('0');
+                #if DEBUG_MODE == 0
+                    Serial.print('0');
+                #endif
             }
         }
-
-        Serial.print(voltageValue);
-        Serial.println(g_BATCH_TIME[i]);
+        #if DEBUG_MODE == 0
+            Serial.print(voltageValue);
+            Serial.println(g_BATCH_TIME[i]);
+        #endif
     }
 }
 
 // Helper Functions
+
+// The units depends on g_DELAY_TYPE
+unsigned long getTime()
+{
+    if(g_DELAY_TYPE == MILLI)
+    {
+        return millis();
+    }
+    if(g_DELAY_TYPE == MICRO)
+    {
+        return micros();
+    }
+    return millis() / 1000; // defaulting to second
+}
 
 byte countDigits(long x)
 {
@@ -100,4 +107,63 @@ void changePrescaler(byte divisionFactor)
 {
     ADCSRA &= ~(bit (ADPS0) | bit (ADPS1) | bit (ADPS2)); // clear prescaler bits
     ADCSRA |= PRESCALE_(divisionFactor);
+}
+
+bool readInput(byte& configType, unsigned long long& value)
+{
+    int readByte = Serial.read();
+    if(readByte == -1)
+    {
+        return false;
+    }
+    
+    configType = readByte;
+    
+    // Reading the config's value
+    // Only supports UTF-8 Formatter
+    readByte = Serial.read();
+
+    byte valueLength = 1; value = 0;
+    while(readByte != END_CONFIG_CHANGE && readByte != -1) // end of the 1 configuration change, or no input anymore
+    {
+        if(valueLength+1 <= 17) // avoiding overflow
+        {
+            value += readByte-int('0');
+            value *= 10;
+            valueLength++;
+        }
+        readByte = Serial.read();
+        
+    }
+
+    return true;
+}
+
+void setting()
+{
+    byte configType;
+    unsigned long long value;
+
+    while(readInput(configType, value))
+    {
+        switch (configType)
+        {
+            case PRESCALER_CONFIG:
+                changePrescaler(value);
+                DEBUG(g_PRESCALER);
+                break;
+
+            case DELAY_CONFIG:
+                g_DELAY = value;
+                break;
+
+            case DELAY_TYPE_CONFIG:
+                g_DELAY_TYPE = value;
+                break;
+                
+            case DECIMAL_POINTS_CONFIG:
+                g_DECIMAL_POINTS = value;
+                break;
+        }
+    }
 }

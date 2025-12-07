@@ -1,9 +1,21 @@
 #ifndef DEFINITION
 #define DEFINITION
 
-#include <math.h>
+#define DEBUG_MODE 0
+
+#if DEBUG_MODE
+    #define DEBUG(X) Serial.println(X)
+#else
+    #define DEBUG(X)
+#endif
+
+// Static Config
+// Must restart the whole program
+// to change it
 #include "maxBatchNumDef.h"
 #include "baudrateDef.h"
+
+#include <math.h>
 
 // Will be defined later on ATMega328P, I think
 #ifndef ADCSRA && ADPS0 && ADPS1 && ADPS2
@@ -28,12 +40,11 @@
 #define MILLI 1
 #define MICRO 2
 
-#define DEBUG_MODE 0
-
-#if DEBUG_MODE
-    #define DEBUG(X) Serial.print(F("\ndebug: "));Serial.println(X)
-#else
-    #define DEBUG(X)
-#endif
+// Dynamic Configuration's
+#define PRESCALER_CONFIG 0
+#define DELAY_CONFIG 1
+#define DELAY_TYPE_CONFIG 2
+#define DECIMAL_POINTS_CONFIG 3
+#define END_CONFIG_CHANGE 127
 
 #endif
