@@ -4,7 +4,7 @@
 #define DEBUG_MODE 0
 
 #if DEBUG_MODE
-    #define DEBUG(X) Serial.println(X)
+    #define DEBUG(X) Serial.print(F("debug:"));Serial.println(X)
 #else
     #define DEBUG(X)
 #endif

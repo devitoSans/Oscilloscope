@@ -44,7 +44,7 @@ class FetcherData:
     # Get until data is valid or timed out
     init_time = perf_counter()
     timedout = False
-    while encodedData == "":
+    while encodedData == "" or encodedData.__len__() <= 4:
       if perf_counter()-init_time > self.timeout:
         timedout = True
         break
@@ -105,4 +105,11 @@ def test():
 
 if __name__ == "__main__":
   test()
-  # test()
+  # test_change_config()
+  # for _ in range(2):
+  #   test()
+  # fetcher._ser.write_bytes(DELAY_CONFIG)
+  # fetcher._ser.write("20")
+  # fetcher._ser.write_bytes(END_CONFIG_CHANGE)
+  # for _ in range(10):
+  #   test()
