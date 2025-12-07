@@ -21,11 +21,10 @@ class PySerial(SerialWrapper):
   def __init__(self, config: Config):
     super().__init__()
     self._ser = serial.Serial(config.get("port"), config.get("baudrate"), timeout=config.get("timeout"))
-    sleep(3)
+    sleep(2)
 
   def read(self) -> None:
     return self._ser.readline().decode().strip()
-    # return self._ser.readline()
   
   def write(self, data: str) -> None:
     self._ser.write(data.encode())

@@ -96,6 +96,7 @@ def test():
     data[i,1] += data[i-1,1]
 
   fig, ax = plt.subplots()             # Create a figure containing a single Axes.
+  # ax.plot(np.arange(len(data[:,1])), data[:, 0])  # Plot some data on the Axes.
   ax.plot(data[:,1], data[:, 0])  # Plot some data on the Axes.
   plt.show()  
 
