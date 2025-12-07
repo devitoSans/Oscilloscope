@@ -126,11 +126,14 @@ bool readInput(byte& configType, unsigned long long& value)
     byte valueLength = 1; value = 0;
     while(readByte != END_CONFIG_CHANGE && readByte != -1) // end of the 1 configuration change, or no input anymore
     {
+        if(value != 0)
+        {
+            value *= 10;
+            valueLength++;
+        }
         if(valueLength+1 <= 17) // avoiding overflow
         {
             value += readByte-int('0');
-            value *= 10;
-            valueLength++;
         }
         readByte = Serial.read();
         
@@ -150,7 +153,6 @@ void setting()
         {
             case PRESCALER_CONFIG:
                 changePrescaler(value);
-                DEBUG(g_PRESCALER);
                 break;
 
             case DELAY_CONFIG:
