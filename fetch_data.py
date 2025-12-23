@@ -19,7 +19,7 @@ class FetcherData:
     self.decimal_points = 3
     self.max_batch_num = 100
     self.delay = 2
-    self.delay_type = DELAY_TYPE_MICRO # pyright: ignore[reportUndefinedVariable]
+    self.delay_type = DELAY_TYPE_MICRO
     self.timeout = timeout
 
     self._ser = SerialTesting() if DEBUG_MODE else PySerial({
