@@ -18,4 +18,4 @@ arduino-cli.exe upload -p COM4 -b arduino:avr:uno .
 
 sleep 1
 
-py fetch_data.py
+py main.py
