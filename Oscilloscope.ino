@@ -98,7 +98,7 @@ byte countDigits(long x)
 // Maximum decimal points is 7, cannot guarantee safety beyond that.
 byte mapToVoltage(long x, long& mappedValue, byte decimalPoints)
 {
-    mappedValue = (long)((x / MAX_ANALOG_INPUT * MAX_VOLTAGE) * ((long)pow(10, decimalPoints)));
+    mappedValue = (long)((float)x / (float)MAX_ANALOG_INPUT * MAX_VOLTAGE) * ((long)pow(10, decimalPoints)));
     return countDigits(mappedValue); // without the dot/point
 }
 
