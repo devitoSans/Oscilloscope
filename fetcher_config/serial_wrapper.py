@@ -31,26 +31,41 @@ class PySerial(SerialWrapper):
 
   def write_bytes(self, data: int) -> None:
     self._ser.write(bytes([data]))
-
 class SerialTesting(SerialWrapper):
   def __init__(self):
-    super().__init__()
+    self._time = 0
 
-  def read(self):
-    ser = PySerial({
-      "port": "COM4",
-      "baudrate": 9600,
-      "timeout": 1
-    })
-    return ser.read()
+  def read(self) -> str:
+    import random
+    voltage = random.randint(0, 5000)   # 0.000 – 5.000 V (x1000)
+    dt = random.randint(50, 200)         # microseconds
+    return f"{voltage}{dt}"
 
-  def write(self, data):
+  def write(self, data: str):
     pass
 
   def write_bytes(self, data: int) -> None:
-    ser = PySerial({
-      "port": "COM4",
-      "baudrate": 9600,
-      "timeout": 1.0
-    })
-    ser.write_bytes(data)
+    pass
+
+# class SerialTesting(SerialWrapper):
+#   def __init__(self):
+#     super().__init__()
+#
+#   def read(self):
+#     ser = PySerial({
+#       "port": "COM4",
+#       "baudrate": 9600,
+#       "timeout": 1
+#     })
+#     return ser.read()
+#
+#   def write(self, data):
+#     pass
+#
+#   def write_bytes(self, data: int) -> None:
+#     ser = PySerial({
+#       "port": "COM4",
+#       "baudrate": 9600,
+#       "timeout": 1.0
+#     })
+#     ser.write_bytes(data)
