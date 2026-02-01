@@ -37,7 +37,7 @@ class FetcherData:
         continue
       setattr(self, key, value)
 
-  # Return Voltage (Volts), Time (Micro seconds)
+  # Return Voltage (Volts), Time (the type is depending on self.delay_type)
   def decode_data(self) -> Data:
     encodedData = self._ser.read()
 
@@ -56,13 +56,24 @@ class FetcherData:
       return [0,0]
 
     voltage = float( encodedData[0:self.decimal_points+1] ) / (10**self.decimal_points)
-    time = int(encodedData[self.decimal_points+1:]) # micro seconds
+    time = int(encodedData[self.decimal_points+1:])
     
     return [voltage, time]
 
   def fetch_data(self) -> DataList:
     dataList = [ self.decode_data() for _ in range(self.max_batch_num) ]
     return dataList
+  
+  # def fetch_data(self, trigger_level: float) -> DataList:
+  #   dataList = np.zeros(self.max_batch_num)
+  #   dataList[0] = self.decode_data()
+
+  #   for i in range(1, self.max_batch_num):
+  #     measured_voltage, measured_period = self.decode_data()
+      
+  #     pass
+
+  #   pass
 
   pass
 
